@@ -16,7 +16,7 @@ import Divider from '@material-ui/core/Divider';
 
 
 const getFormatedDate = (data) => {
-    const date= new Date(data);
+    const date = new Date(data);
     return (
         date.getDate() + '/' + date.getMonth() + '/' + date.getFullYear()
     )
@@ -29,7 +29,7 @@ const Cell = (props) => (
             <div style={{ display: "inline" }}>
                 <div style={{ float: "left" }}> {props.data.taskName}</div>
                 <div style={{ float: "right" }}>
-                    {getFormatedDate(props.data.date)+ " - " + (new Date(props.data.time).getHours()).toString() + ":" + (new Date(props.data.time).getMinutes()).toString()}
+                    {getFormatedDate(props.data.date) + " - " + (new Date(props.data.time).getHours()).toString() + ":" + (new Date(props.data.time).getMinutes()).toString()}
                 </div>
             </div>
             <br />
@@ -67,6 +67,18 @@ class Taskdetails extends Component {
 
     )
 
+
+    getUpcomingDates = (dates) => {
+        const date = new Date();
+        return dates.filter((ele, index) => {
+            const upDate = new Date(ele.date)
+            return upDate > date
+
+
+        })
+
+    }
+
     activeAll = () => {
         this.setState({
             activeUp: "outlined",
@@ -75,12 +87,22 @@ class Taskdetails extends Component {
         })
     }
     activeUp = () => {
-        const lists = this.arraySort().slice(0, 3)
+        let listData;
+        const lists = this.arraySort()
+
+        const upcomingList = this.getUpcomingDates(lists);
+        if (upcomingList.length > 3) {
+            listData = upcomingList.slice(0, 3)
+        }
+        else {
+            listData = upcomingList;
+        }
+
         console.log(lists)
         this.setState({
             activeUp: "contained",
             activeAll: "outlined",
-            tasks: lists
+            tasks: listData
 
         })
     }
